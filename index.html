@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Resume Portfolio</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f4f4;
+padding:30px;
+}
+
+.container{
+max-width:800px;
+margin:auto;
+background:white;
+padding:25px;
+border-radius:8px;
+box-shadow:0 0 10px lightgray;
+}
+
+h1{
+text-align:center;
+color:#232F3E;
+}
+
+input{
+width:100%;
+padding:10px;
+margin-bottom:20px;
+box-sizing:border-box;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+background:#232F3E;
+color:white;
+padding:10px;
+}
+
+td{
+padding:10px;
+border-bottom:1px solid #ddd;
+}
+
+a{
+background:#FF9900;
+padding:8px 15px;
+text-decoration:none;
+color:black;
+font-weight:bold;
+border-radius:5px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Resume Portfolio</h1>
+
+<p>
+Download resumes, certificates and project reports.
+</p>
+
+<input
+type="text"
+id="search"
+placeholder="Search documents..."
+onkeyup="searchFiles()"
+>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Document</th>
+
+<th>Download</th>
+
+</tr>
+
+</thead>
+
+<tbody id="list">
+
+<tr>
+
+<td colspan="2">
+Loading...
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+
+<script>
+
+let docs = [];
+
+
+function display(data){
+
+const tbody = document.getElementById("list");
+
+tbody.innerHTML = "";
+
+
+if(data.length === 0){
+
+tbody.innerHTML =
+"<tr><td colspan='2'>No Documents Found</td></tr>";
+
+return;
+
+}
+
+
+data.forEach(file => {
+
+tbody.innerHTML += `
+
+<tr>
+
+<td>
+${file.name}
+</td>
+
+<td>
+
+<a
+href="documents/${encodeURIComponent(file.name)}"
+target="_blank"
+>
+
+Download
+
+</a>
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+
+function searchFiles(){
+
+const q = document
+.getElementById("search")
+.value
+.toLowerCase();
+
+
+display(
+
+docs.filter(
+
+file =>
+file.name.toLowerCase().includes(q)
+
+)
+
+);
+
+}
+
+
+fetch("resumes.json?t=" + Date.now())
+
+.then(response => response.json())
+
+.then(data => {
+
+docs = data.slice().reverse();
+
+display(docs);
+
+})
+
+.catch(error => {
+
+console.error(error);
+
+document.getElementById("list").innerHTML =
+"<tr><td colspan='2'>Unable to load documents</td></tr>";
+
+});
+
+</script>
+
+</body>
+
+</html>
